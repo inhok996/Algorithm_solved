@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <string.h>
 #define QSIZE 10001
-int f;
-int b;
-int N;
-char cmd[6];
+int f;//front
+int b;//back
+int N;//command 횟수
+char cmd[6]; //cmd error
 int int_Q[QSIZE];
 int val;
 int size;
@@ -16,8 +16,8 @@ int ret_front();
 int if_empty();
 
 void enQ(int val){
-	if((b+1) % QSIZE == f){
-		;//error
+	if((b+1) % QSIZE == f){//3개만 쓰겠다는 뜻
+		printf("push error\n");
 	}else{
 		int_Q[b] = val;
 		b = (b+1) % QSIZE;
@@ -38,12 +38,18 @@ int deQ(){
 }
 
 int ret_front(){
-	if( f != b ) return int_Q[f];
+	if( !if_empty() ) return int_Q[f];
 	else return -1;
 }
 
 int ret_back(){
-	if( f != b ) return int_Q[b-1];
+	if( !if_empty() ){ 
+		//b가 0이면 b를 -1로 보내기 때문에 error
+		if(b > 0) return int_Q[b-1];
+		else{//b가 0인데 큐가 차있을 경우
+			return int_Q[QSIZE - 1];
+		}
+	}
 	else return -1;
 }
 
@@ -53,12 +59,12 @@ int if_empty(){
 }
 
 int main(void){
-	freopen("test.txt", "r", stdin);
+	//freopen("test.txt", "r", stdin);
 	scanf("%d",&N);
 	f = 0;
 	b = 0;
 	size = 0;
-	for(int i = 0 ; i < 15 ; i++){
+	for(int i = 0 ; i < N ; i++){
 		scanf("%s",&cmd);
 		if(!strcmp(cmd,"push")){
 			scanf("%d",&val);
